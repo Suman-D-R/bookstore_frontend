@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
-import { login, register } from "../utils/user";
+import { login, register, getUser } from "../utils/user";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -51,11 +51,18 @@ function Login() {
   };
 
   const handleSubmitLogin = async () => {
-    await login(data).then((response) => {
-      const data = response.data.data;
-      localStorage.setItem("accessTokenBookstore", data);
+    try {
+      const response = await login(data);
+      const accessToken = response.data.data;
+      localStorage.setItem("accessTokenBookstore", accessToken);
+
+      const userData = await getUser(accessToken);
+
+      localStorage.setItem("name", userData.data.data.firstName);
       navigate("/home");
-    });
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   const handleSubmitRegister = () => {
@@ -73,13 +80,19 @@ function Login() {
           <div className="login-page">
             <div
               onClick={handleChangeForm}
-              style={{ color: showLoginSignUp ? "#0A0102" : "#878787" }}
+              style={{
+                cursor: "pointer",
+                color: showLoginSignUp ? "#0A0102" : "#878787",
+              }}
             >
               LOGIN
             </div>
             <div
               onClick={handleChangeForm}
-              style={{ color: showLoginSignUp ? "#878787" : "#0A0102" }}
+              style={{
+                cursor: "pointer",
+                color: showLoginSignUp ? "#878787" : "#0A0102",
+              }}
             >
               SIGNUP
             </div>
