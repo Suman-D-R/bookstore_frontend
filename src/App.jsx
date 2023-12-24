@@ -1,22 +1,44 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./App.css";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import Home from "./components/Home";
-import Cart from "./components/Cart";
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import './App.css';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import Home from './components/Home';
+import ViewBook from './components/ViewBook';
+import Cart from './components/Cart';
+import store from './utils/store/appStore';
+import Profile from './components/Profile';
+import Wishlist from './components/Wishlist';
 
 const router = createBrowserRouter([
-  { path: "/", element: <Login /> },
+  { path: '/', element: <Login /> },
   {
-    path: "/",
+    path: '/',
     element: <Dashboard />,
     children: [
       {
-        path: "/home",
+        path: '/home',
         index: true,
         element: <Home />,
       },
+      {
+        path: '/book/:id',
+        element: <ViewBook />,
+      },
+      {
+        path: '/home/profile',
+        element: <Profile />,
+      },
+      {
+        path: '/home/Wishlist',
+        element: <Wishlist />,
+      },
     ],
+  },
+  {
+    path: '/cart',
+    element: <Cart />,
   },
   {
     path: '/cart', element: <Cart />
@@ -26,7 +48,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <div className="app-container">
-      <RouterProvider router={router}></RouterProvider>
+      <Provider store={store}>
+        <RouterProvider router={router}></RouterProvider>
+      </Provider>
     </div>
   );
 }
