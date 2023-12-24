@@ -10,6 +10,12 @@ import Cart from './components/Cart';
 import store from './utils/store/appStore';
 import Profile from './components/Profile';
 import Wishlist from './components/Wishlist';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./App.css";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Home from "./components/Home";
+import Cart from "./components/Cart";
 
 const router = createBrowserRouter([
   { path: '/', element: <Login /> },
@@ -40,6 +46,9 @@ const router = createBrowserRouter([
     path: '/cart',
     element: <Cart />,
   },
+  {
+    path: '/cart', element: <Cart />
+  }
 ]);
 
 function App() {
