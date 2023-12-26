@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import "../sass/ViewBook.scss";
@@ -17,6 +17,7 @@ import { addItemToCart, removeFromCart } from "../utils/store/cartSlice";
 
 export default function ViewBook() {
   const [quantity, setQuantity] = useState(false);
+  const [wishlistData,setWishlistData] = useState(false);
   const [count, setCount] = useState(1);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -24,33 +25,44 @@ export default function ViewBook() {
   const wishlist = useSelector((store)=>store.wish.wishlist);
 
   const data = bookData.find((book) => book._id === id);
-  const wishlistdata = wishlist.items.find((book) => book._id === id);
+  useEffect(() => {
+    const dataWishlist = wishlist.items.find((book) => book.book_id === id);
+    if(dataWishlist){
+      setWishlistData(true)
+    }
+  }, []);
+  
+  
 
   const handleCart = (data) => {
-    cartOperationsUpdate(`${data._id}`);
-    setQuantity(true);
+    cartOperationsUpdate(data._id);
     dispatch(addItemToCart(data))
-    
+    setQuantity(true);
   };
 
+  
   
 
   const handleWishlist = (data) => {
 
-    console.log(data)
-    dispatch(addItemToWishlist(data))
     wishlistOperationsUpdate(`${data._id}`);
+    dispatch(addItemToWishlist(data))
+    setWishlistData(!wishlistData);
+    
+    
   };
 
   const handleQuantityAdd = (data) => {
       setCount(count + 1);
       dispatch(addItemToCart(data))
+      cartOperationsUpdate(data._id);
   };
 
   const handleQuantityRemove = (data) =>{
+    if(count > 1){
     setCount(count - 1);
-    dispatch(removeFromCart(data));
-    if(count <= 1){
+    dispatch(removeFromCart(data));}
+    else{
       setQuantity(false);
     }
   }
@@ -118,8 +130,8 @@ export default function ViewBook() {
                     handleWishlist(data);
                   }}
                   sx={{
-                    background: wishlistdata ? "#333333" : "#A03037",
-                    "&:hover": {  background: wishlistdata ? "#333333" :  "#7C1E1E" },
+                    background: wishlistData ? "#333333" : "#A03037",
+                    "&:hover": {  background: wishlistData ? "#333333" :  "#7C1E1E" },
                   }}
                   size="medium"
                   variant="contained"

@@ -42,3 +42,23 @@ export const wishlistOperations = async (endpoint = "") => {
       throw error;
     }
   };
+
+
+  export const wishlistDelete = async (endpoint) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/v1/wishlist/${endpoint}`,
+        {
+          headers: headers,
+        }
+      );
+  
+      const bookData = response.data;
+  
+      return bookData;
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      throw error;
+    }
+  };
+

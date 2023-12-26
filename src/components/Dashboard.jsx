@@ -5,8 +5,13 @@ import "../sass/dashboard.scss";
 function Dashboard() {
   return (
     <div className="dashboard-container">
+      <div className="dashboard-header">
       <Header home={false}/>
+      </div>
+      
+      <div className="outlet">
       <Outlet />
+      </div>
     </div>
   );
 }

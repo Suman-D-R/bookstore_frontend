@@ -15,6 +15,8 @@ import { setCartItems } from "../utils/store/cartSlice";
 import { setBookData, sortByPrice } from "../utils/store/bookSlice";
 import { wishlistOperations } from "../utils/wishlist";
 import { setWishlistItems } from "../utils/store/wishSlice";
+import { setOrders } from "../utils/store/orderSlice";
+import { getOrders } from "../utils/order";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -37,6 +39,7 @@ const Home = () => {
     fetchData(bookOperations, setBookData);
     fetchData(cartOperations, setCartItems);
     fetchData(wishlistOperations, setWishlistItems);
+    fetchData(getOrders,setOrders);
   }, [dispatch]);
 
   const handleChange = (event) => {
