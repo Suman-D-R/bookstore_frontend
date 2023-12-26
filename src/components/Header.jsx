@@ -54,6 +54,10 @@ function Header({ home = true }) {
     navigation("/home/wishlist");
   };
 
+  const handleOrder = () => {
+    navigation('/home/orders');
+  }
+
   const handleSearch = () => {
     dispatch(filterBookData(searchValue));
   };
@@ -140,7 +144,7 @@ function Header({ home = true }) {
                         >
                           Profile
                         </div>
-                        <div style={{ cursor: "pointer" }}>My Orders</div>
+                        <div onClick={handleOrder} style={{ cursor: "pointer" }}>My Orders</div>
                         <div
                           style={{ cursor: "pointer" }}
                           onClick={handleWishlist}
@@ -247,7 +251,7 @@ function Header({ home = true }) {
                         >
                           Profile
                         </div>
-                        <div style={{ cursor: "pointer" }}>My Orders</div>
+                        <div onClick={handleOrder} style={{ cursor: "pointer" }}>My Orders</div>
                         <div
                           style={{ cursor: "pointer" }}
                           onClick={handleWishlist}
