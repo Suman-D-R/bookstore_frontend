@@ -10,6 +10,8 @@ import Cart from './components/Cart';
 import store from './utils/store/appStore';
 import Profile from './components/Profile';
 import Wishlist from './components/Wishlist';
+import OrderSuccessful from './components/OrderSuccessful';
+import OrderDetails from './components/OrderDetails';
 
 const router = createBrowserRouter([
   { path: '/', element: <Login /> },
@@ -34,6 +36,14 @@ const router = createBrowserRouter([
         path: '/home/Wishlist',
         element: <Wishlist />,
       },
+      {
+        path: '/home/ordersuccessful',
+        element: <OrderSuccessful />
+      },
+      {
+        path: '/home/orders',
+        element: <OrderDetails />
+      }
     ],
   },
   {
