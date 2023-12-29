@@ -5,16 +5,20 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { IconButton } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { addItemToCart, removeFromCart } from "../utils/store/cartSlice";
+import { deletFromCart, cartOperationsUpdate} from "../utils/cart";
 
 function CartBookCard({ cartData, summery=false }) {
   const dispatch = useDispatch();
 
   const handleRemoveItems = (data) => {
     dispatch(removeFromCart(data));
+    deletFromCart(data.book_id);
+
   };
 
   const handleAddItems = (data) => {
     dispatch(addItemToCart(data));
+    cartOperationsUpdate(data.book_id);
   };
 
   return (

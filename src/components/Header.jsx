@@ -13,7 +13,10 @@ import Fade from "@mui/material/Fade";
 import Popper from "@mui/material/Popper";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { filterBookData } from "../utils/store/bookSlice";
+import { filterBookData, setBookData } from "../utils/store/bookSlice";
+import { setAddress } from "../utils/store/address";
+import { setOrders } from "../utils/store/orderSlice";
+import { setWishlistItems } from "../utils/store/wishSlice";
 
 function Header({ home = true }) {
   const navigation = useNavigate();
@@ -68,6 +71,15 @@ function Header({ home = true }) {
       dispatch(filterBookData(""))
     }
   };
+
+  const handleLogOut = ()=>{
+    dispatch(setAddress([]));
+    dispatch(setBookData([]));
+    dispatch(setOrders([]));
+    dispatch(setWishlistItems([]));
+    localStorage.clear();
+    navigation('/');
+  }
 
   
   return (
@@ -151,7 +163,7 @@ function Header({ home = true }) {
                         >
                           My Wishlist
                         </div>
-                        <Button variant="outlined">Logout</Button>
+                        <Button onClick={handleLogOut} variant="outlined">Logout</Button>
                       </div>
                     </Fade>
                   )}
@@ -170,7 +182,7 @@ function Header({ home = true }) {
         </header>
       ) : (
         <header className="header-home">
-          <div className="store-name">
+          <div onClick={handleHome} className="store-name">
             <svg
               fill="white"
               xmlns="http://www.w3.org/2000/svg"
@@ -258,7 +270,7 @@ function Header({ home = true }) {
                         >
                           My Wishlist
                         </div>
-                        <Button variant="outlined">Logout</Button>
+                        <Button onClick={handleLogOut} variant="outlined">Logout</Button>
                       </div>
                     </Fade>
                   )}
