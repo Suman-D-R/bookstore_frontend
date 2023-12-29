@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../sass/ViewBook.scss";
 import Button from "@mui/material/Button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -9,11 +9,12 @@ import TextField from "@mui/material/TextField";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
 import { wishlistOperationsUpdate } from "../utils/wishlist";
-import { addItemToWishlist } from "../utils/store/wishSlice";
+import { addItemToWishlist, setWishlistItems } from "../utils/store/wishSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import IconButton from "@mui/material/IconButton";
 import { addItemToCart, removeFromCart } from "../utils/store/cartSlice";
+import useBook from "../utils/hooks/viewBook.hook";
 
 export default function ViewBook() {
   const [quantity, setQuantity] = useState(false);
@@ -23,10 +24,11 @@ export default function ViewBook() {
   const dispatch = useDispatch();
   const bookData = useSelector((store) => store.book.bookData);
   const wishlist = useSelector((store)=>store.wish.wishlist);
+  const navigate = useNavigate();
 
   const data = bookData.find((book) => book._id === id);
   useEffect(() => {
-    const dataWishlist = wishlist.items.find((book) => book.book_id === id);
+    const dataWishlist = wishlist?.items?.find((book) => book.book_id === id);
     if(dataWishlist){
       setWishlistData(true)
     }
@@ -41,12 +43,17 @@ export default function ViewBook() {
   };
 
   
-  
+  useBook();
 
   const handleWishlist = (data) => {
 
     wishlistOperationsUpdate(`${data._id}`);
+    if(wishlist?.length){
     dispatch(addItemToWishlist(data))
+    }
+    else{
+      dispatch(setWishlistItems({items:[{...data}]}))
+    }
     setWishlistData(!wishlistData);
     
     
@@ -67,19 +74,23 @@ export default function ViewBook() {
     }
   }
 
+  const handleHome = () =>{
+    navigate('/home')
+  }
+
   return (
     <div className="viewbook-container">
       {data ? (
         <>
           <div className="viewbook-content-1">
-            <span>Home /</span>
+            <span onClick={handleHome}>Home /</span>
             Book(01)
           </div>
           <div className="viewbook-content-2">
             <div className="content-sub-1">
               <img src={data.bookImage} />
               <div className="viewbook-buttons">
-                {data.quantity > 0 ? (
+                {data?.quantity > 0 ? (
                   <>
                     {quantity ? (
                       <div className="cart-quantity-update">
@@ -137,7 +148,7 @@ export default function ViewBook() {
                   variant="contained"
                   startIcon={<FavoriteBorderIcon />}
                 >
-                  Add toWishlist
+                  {wishlistData ? "remove  Wishlist" : "Add to Wishlist"  }
                 </Button>
               </div>
             </div>

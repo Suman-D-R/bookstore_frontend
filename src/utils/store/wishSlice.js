@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const wishSlice = createSlice({
   name: 'wish',
   initialState: {
-    wishlist: [],
+    wishlist: {},
   },
   reducers: {
     setWishlistItems: (state, action) => {

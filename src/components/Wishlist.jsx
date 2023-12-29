@@ -2,11 +2,14 @@ import React from 'react'
 import "../sass/Wishlist.scss"
 import { useSelector } from 'react-redux';
 import WishlistCard from './WishlistCard';
+import useWishlist from '../utils/hooks/wishlist.hook';
 
 
 function Wishlist() {
 
     const wishlist = useSelector((store)=>store.wish.wishlist);
+
+    useWishlist();
     
   return (
     <>{
@@ -18,19 +21,19 @@ function Wishlist() {
             <div className='wishlist-content'>
                 <div className='wishlist-total'>
                    <h2>
-                   My Wishlist ({wishlist.items.length})
+                   My Wishlist ({wishlist?.items?.length})
                    </h2>
                 </div>
                 <div className='wishlist-items'>
                     {
-                        wishlist.items.map((book)=>{
+                        wishlist.items?.map((book)=>{
                             return <WishlistCard bookData={book} />
                         })
                     }
                 </div>
             </div>
         </div>  :
-        <div>Loging</div>
+        <div>No items in wishlist</div>
     }
     </>
   )

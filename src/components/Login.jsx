@@ -17,29 +17,56 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showLoginSignUp, setShowLoginSignUp] = useState(true);
 
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    confirmPassword: "",
+  });
+
+  const [errors, setErrors] = useState({
+    email: false,
+    password: false,
+    firstName: false,
+    lastName: false,
+    confirmPassword: false,
+  });
+
   const navigate = useNavigate();
 
   const handleEmail = (e) => {
-    setData({ ...data, email: e.target.value });
+    const value = e.target.value;
+    setData({ ...data, email: value });
+    setErrors({ ...errors, email: value === "" });
   };
 
   const handlePassword = (e) => {
-    setData({ ...data, password: e.target.value });
+    const value = e.target.value;
+    setData({ ...data, password: value });
+    setErrors({ ...errors, password: value === "" });
   };
 
   const handleFirstName = (e) => {
-    setData({ ...data, firstName: e.target.value });
+    const value = e.target.value;
+    setData({ ...data, firstName: value });
+    setErrors({ ...errors, firstName: value === "" });
   };
 
   const handleLastName = (e) => {
-    setData({ ...data, lastName: e.target.value });
+    const value = e.target.value;
+    setData({ ...data, lastName: value });
+    setErrors({ ...errors, lastName: value === "" });
   };
 
   const handleConfirmPassword = (e) => {
-    setData({ ...data, confirmPassword: e.target.value });
+    const value = e.target.value;
+    setData({ ...data, confirmPassword: value });
+    setErrors({
+      ...errors,
+      confirmPassword: value === "" || value !== data.password,
+    });
   };
-
   const handleChangeForm = () => {
     setShowLoginSignUp(!showLoginSignUp);
   };
@@ -66,7 +93,17 @@ function Login() {
   };
 
   const handleSubmitRegister = () => {
-    register(data);
+    if (data.email === "" || data.password === "" ) {
+      setErrors({
+        email: true,
+        password: data.password === "",
+        // Add similar checks for other fields if needed
+      });
+    }
+     else {
+      register(data);
+      setShowLoginSignUp(true);
+    }
   };
 
   return (
@@ -105,6 +142,9 @@ function Login() {
                   onChange={handleEmail}
                   sx={{ width: "100%" }}
                   size="small"
+                  required
+                  error={errors.email}
+                  helperText={errors.email && "Email is required"}
                 />
               </div>
               <div>
@@ -113,6 +153,8 @@ function Login() {
                   <OutlinedInput
                     onChange={handlePassword}
                     id="outlined-adornment-password"
+                    error={errors.password}
+                    helperText={errors.password && "Password is required"}
                     type={showPassword ? "text" : "password"}
                     endAdornment={
                       <InputAdornment position="end">
@@ -179,6 +221,8 @@ function Login() {
               <div>
                 <p>Email Id</p>
                 <TextField
+                 error={errors.email}
+                 helperText={errors.email && "Email is required"}
                   onChange={handleEmail}
                   sx={{ width: "100%" }}
                   size="small"

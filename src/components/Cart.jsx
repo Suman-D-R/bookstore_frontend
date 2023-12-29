@@ -14,30 +14,39 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { setOrders } from "../utils/store/orderSlice";
 import { placeOrder } from "../utils/order";
+import useCart from "../utils/hooks/cart.hoock";
+import useAddress from "../utils/hooks/address.hook";
 
 function Cart() {
   const [customerDetails, setCustomerDetails] = useState(false);
   const [address, setAddress] = useState(false);
-  const [addressDetails, setAddressDetails] = useState({
-    fullName: "",
-    mobileNumber: "",
-    address: "",
-    city: "",
-    state: "",
-    type: "Home", 
-  });
+  const [total, setTotal] = useState();
+  useAddress();
+  const data = useSelector((store) => store.address?.addressData);
 
-  const dispatch = useDispatch();
+  const addressData = data?.address?.[0];
 
-  const [isFormValid, setIsFormValid] = useState(false);
+  const dispach = useDispatch();
 
   const navigate = useNavigate();
-  const cartData = useSelector((store) => store.cart.cartItems);
+
+  useCart();
+
+  const cartData = useSelector((store) => store.cart?.cartItems);
+
   const location = [
     { label: "Bengaluru" },
     { label: "Mysore" },
     { label: "Mumbai" },
   ];
+
+  useEffect(() => {
+    const tatalAmount = cartData?.items?.reduce((total, val) => {
+      return total + val.quantity * val.price;
+    }, 0);
+
+    setTotal(tatalAmount);
+  }, [cartData?.items]);
 
   const handleOrder = () => {
     setCustomerDetails(true);
@@ -47,37 +56,16 @@ function Cart() {
     setAddress(true);
   };
 
-  const handleCheckOut = () => {
-    const  data = {...cartData, address :addressDetails}
-    
-    dispatch(setOrders(addressDetails));
+  const handleCheckOut = (data) => {
+    dispach(setOrders());
     placeOrder(data);
 
-    
- 
     navigate("/home/ordersuccessful");
   };
 
-  const handleAddressInputChange = (field, value) => {
-    setAddressDetails((prevDetails) => ({
-      ...prevDetails,
-      [field]: value,
-    }));
+  const handleAddAddress = () => {
+    navigate("/home/profile");
   };
-
-  const validateForm = () => {
-    const requiredFields = ["fullName", "mobileNumber", "address", "city", "state"];
-
-    const isValid = requiredFields.every(
-      (field) => addressDetails[field] && addressDetails[field].trim() !== ""
-    );
-
-    setIsFormValid(isValid);
-  };
-
-  useEffect(() => {
-    validateForm();
-  }, [addressDetails]);
 
   return (
     <div className="cart-container">
@@ -100,14 +88,18 @@ function Cart() {
                   options={location}
                   sx={{ width: 200 }}
                   renderInput={(params) => (
-                    <TextField size="small" {...params} placeholder="Location" />
+                    <TextField
+                      size="small"
+                      {...params}
+                      placeholder="Location"
+                    />
                   )}
                 />
               </div>
             </div>
             <div className="item-content-2">
               {cartData.items &&
-                cartData.items.map((val, index) => (
+                cartData?.items?.map((val, index) => (
                   <CartBookCard key={val.book_id} cartData={val} />
                 ))}
             </div>
@@ -124,60 +116,66 @@ function Cart() {
           <div className="cart-content-3">
             <div className="cart-customer-content">
               <h1>Customer Details</h1>
+              <Button onClick={handleAddAddress}>Add address</Button>
             </div>
-            {customerDetails && address === false ? (
+            {customerDetails && addressData ? (
               <div className="cart-address-form">
                 <div className="cart-textcontent">
                   <div className="cart-split-content">
                     <p>Full Name</p>
                     <TextField
                       fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
                       id="fullWidth"
-                      onChange={(e) =>
-                        handleAddressInputChange("fullName", e.target.value)
-                      }
+                      value={addressData.fullName}
                     />
                   </div>
                   <div className="cart-split-content">
                     <p>Mobile Number</p>
                     <TextField
+                      InputProps={{
+                        readOnly: true,
+                      }}
                       fullWidth
                       id="fullWidth"
-                      onChange={(e) =>
-                        handleAddressInputChange("mobileNumber", e.target.value)
-                      }
+                      value={addressData.mobileNumber}
                     />
                   </div>
                 </div>
                 <div>
                   <p>Address</p>
                   <TextField
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     fullWidth
                     id="fullWidth"
-                    onChange={(e) =>
-                      handleAddressInputChange("address", e.target.value)
-                    }
+                    value={addressData.address}
                   />
                 </div>
                 <div className="cart-textcontent">
                   <div className="cart-split-content">
                     <p>City / Town</p>
                     <TextField
+                      InputProps={{
+                        readOnly: true,
+                      }}
                       fullWidth
                       id="fullWidth"
-                      onChange={(e) =>
-                        handleAddressInputChange("city", e.target.value)
-                      }
+                      value={addressData.city}
                     />
                   </div>
                   <div className="cart-split-content">
                     <p>State </p>
                     <TextField
+                      InputProps={{
+                        readOnly: true,
+                      }}
                       fullWidth
                       id="fullWidth"
-                      onChange={(e) =>
-                        handleAddressInputChange("state", e.target.value)
-                      }
+                      value={addressData.state}
                     />
                   </div>
                 </div>
@@ -195,25 +193,13 @@ function Cart() {
                         value="Home"
                         label="Home"
                         control={<Radio />}
-                        onChange={(e) =>
-                          handleAddressInputChange("type", e.target.value)
-                        }
                       />
                       <FormControlLabel
                         value="Work"
                         control={<Radio />}
                         label="Work"
-                        onChange={(e) =>
-                          handleAddressInputChange("type", e.target.value)
-                        }
                       />
-                      <FormControlLabel
-                        value="other"
-                        control={<Radio />}
-                        onChange={(e) =>
-                          handleAddressInputChange("type", e.target.value)
-                        }
-                      />
+                      <FormControlLabel value="other" control={<Radio />} />
                     </RadioGroup>
                   </FormControl>
                 </div>
@@ -222,11 +208,7 @@ function Cart() {
                     <div></div>
                   ) : (
                     <div className="item-content-3">
-                      <Button
-                        onClick={handleAddress}
-                        variant="contained"
-                        disabled={!isFormValid}
-                      >
+                      <Button onClick={handleAddress} variant="contained">
                         Continue
                       </Button>
                     </div>
@@ -254,10 +236,14 @@ function Cart() {
               ) : (
                 <div></div>
               )}
-              <div>
+              <div className="checkout-container">
                 {address ? (
                   <div className="item-content-3">
-                    <Button onClick={handleCheckOut} variant="contained">
+                    <h2>total Rs. {total}</h2>
+                    <Button
+                      onClick={() => handleCheckOut(addressData._id)}
+                      variant="contained"
+                    >
                       Check Out
                     </Button>
                   </div>
@@ -269,7 +255,7 @@ function Cart() {
           </div>
         </div>
       ) : (
-        <div>Loading</div>
+        <div>No cart Items</div>
       )}
     </div>
   );

@@ -21,7 +21,7 @@ export const getOrders = async () => {
 export const placeOrder = async (data) => {
   try {
     const response = await axios.post(
-      `http://localhost:3000/api/v1/order`,{data},
+      `http://localhost:3000/api/v1/order`,{data:data},
       {
         headers: {
           Authorization: `Bearer ${bearer_token}`,
@@ -34,7 +34,7 @@ export const placeOrder = async (data) => {
 
     return bookData;
   } catch (error) {
-    console.error("Error fetching books:", error);
+    console.log("Error fetching books:", error);
     throw error;
   }
 };

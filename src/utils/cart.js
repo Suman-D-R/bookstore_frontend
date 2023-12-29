@@ -42,3 +42,22 @@ export const cartOperations = async (endpoint = "") => {
       throw error;
     }
   };
+
+
+  export const deletFromCart = async (endpoint) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/v1/cart/${endpoint}`,
+        {
+          headers: headers,
+        }
+      );
+  
+      const bookData = response.data;
+  
+      return bookData;
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      throw error;
+    }
+  };

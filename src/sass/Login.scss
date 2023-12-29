@@ -7,7 +7,7 @@
   align-items: center;
 }
 .login-content-box {
-  height: 50%;
+  min-height: 50%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@
 }
 .login-box-2 {
   width: 389px;
-  height: 425px;
+  min-height: 425px;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 5px 15px #00000029;
   border: 1px solid #e4e4e4;
@@ -52,7 +52,7 @@
   align-items: center;
 }
 .login-page{
-    height: 20%;
+    height: 80px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -89,9 +89,10 @@
 .signup-form{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 10px;
     width: 80%;
-    height: 75%;
+    min-height: 75%;
+    margin-bottom: 20px;
 }
 @media only screen and (max-width:800px) {
   .login-box-1{
@@ -99,7 +100,7 @@
   }
   .login-box-2 {
     max-width: 389px;
-    max-height: 425px;
+    min-height: 425px;
     position: static !important;
     display: flex;
     align-self: center;
