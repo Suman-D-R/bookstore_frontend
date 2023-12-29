@@ -57,7 +57,7 @@ function Cart() {
   };
 
   const handleCheckOut = (data) => {
-    dispach(setOrders());
+    dispach(setOrders({items}));
     placeOrder(data);
 
     navigate("/home/ordersuccessful");
@@ -238,7 +238,7 @@ function Cart() {
               )}
               <div className="checkout-container">
                 {address ? (
-                  <div className="item-content-3">
+                  <div className="item-summery-checkout">
                     <h2>total Rs. {total}</h2>
                     <Button
                       onClick={() => handleCheckOut(addressData._id)}

@@ -63,9 +63,10 @@
 }
 .login-form{
     width: 80%;
-    height: 70%;
+    height: 80%;
     display: flex;
     flex-direction: column;
+    gap:10px;
     justify-content: space-evenly;
 }
 .name-container{

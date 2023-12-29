@@ -13,17 +13,19 @@ import { addItemToWishlist, setWishlistItems } from "../utils/store/wishSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import IconButton from "@mui/material/IconButton";
-import { addItemToCart, removeFromCart } from "../utils/store/cartSlice";
+import { addItemToCart, removeFromCart,setCartItems } from "../utils/store/cartSlice";
 import useBook from "../utils/hooks/viewBook.hook";
 
 export default function ViewBook() {
   const [quantity, setQuantity] = useState(false);
   const [wishlistData,setWishlistData] = useState(false);
+  const [notify,setNotify]= useState(false);
   const [count, setCount] = useState(1);
   const { id } = useParams();
   const dispatch = useDispatch();
   const bookData = useSelector((store) => store.book.bookData);
   const wishlist = useSelector((store)=>store.wish.wishlist);
+  const cartData = useSelector((store)=>store.cart.cartItems);
   const navigate = useNavigate();
 
   const data = bookData.find((book) => book._id === id);
@@ -38,7 +40,12 @@ export default function ViewBook() {
 
   const handleCart = (data) => {
     cartOperationsUpdate(data._id);
-    dispatch(addItemToCart(data))
+    if(cartData?.length){
+      dispatch(addItemToCart(data))
+      }
+      else{
+        dispatch(setCartItems({items:[{...data}]}))
+      }
     setQuantity(true);
   };
 
@@ -72,6 +79,10 @@ export default function ViewBook() {
     else{
       setQuantity(false);
     }
+  }
+
+  const handleNotify = ()=>{
+    setNotify(true);
   }
 
   const handleHome = () =>{
@@ -126,14 +137,15 @@ export default function ViewBook() {
                   </>
                 ) : (
                   <Button
+                  onClick={handleNotify}
                     sx={{
-                      background: "#A03037",
-                      "&:hover": { background: "#7C1E1E" },
+                      background: notify ? "#333333" : "#A03037" ,
+                      "&:hover": { background:notify? "#333344": "#7C1E1E" },
                     }}
                     size="medium"
                     variant="contained"
                   >
-                    Fotify Me
+                    {notify ? "Got It" : "Fotify Me"}
                   </Button>
                 )}
                 <Button

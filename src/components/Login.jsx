@@ -79,30 +79,48 @@ function Login() {
 
   const handleSubmitLogin = async () => {
     try {
-      const response = await login(data);
-      const accessToken = response.data.data;
-      localStorage.setItem("accessTokenBookstore", accessToken);
+      if (data.email === "" || data.password === "") {
+        setErrors({
+          email: data.email === "",
+          password: data.password === "",
+        });
+      } else {
+        const response = await login(data);
+        const accessToken = response.data.data;
+        localStorage.setItem("accessTokenBookstore", accessToken);
 
-      const userData = await getUser(accessToken);
+        const userData = await getUser(accessToken);
 
-      localStorage.setItem("name", userData.data.data.firstName);
-      navigate("/home");
+        localStorage.setItem("name", userData.data.data.firstName);
+        navigate("/home");
+      }
     } catch (error) {
       console.error("Error during login:", error);
     }
   };
 
-  const handleSubmitRegister = () => {
-    if (data.email === "" || data.password === "" ) {
-      setErrors({
-        email: true,
-        password: data.password === "",
-        // Add similar checks for other fields if needed
-      });
-    }
-     else {
-      register(data);
-      setShowLoginSignUp(true);
+  const handleSubmitRegister = async () => {
+    try {
+      if (
+        data.email === "" ||
+        data.password === "" ||
+        data.firstName === "" ||
+        data.confirmPassword === "" ||
+        data.lastName === ""
+      ) {
+        setErrors({
+          email: data.email === "",
+          password: data.password === "",
+          firstName: data.firstName === "",
+          lastName: data.lastName === "",
+          confirmPassword: data.confirmPassword === "",
+        });
+      } else {
+        await register(data);
+        setShowLoginSignUp(true);
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
     }
   };
 
@@ -204,6 +222,8 @@ function Login() {
                 <div className="firstname-container">
                   <p>First Name</p>
                   <TextField
+                    error={errors.firstName}
+                    helperText={errors.firstName && "required"}
                     onChange={handleFirstName}
                     sx={{ width: "100%" }}
                     size="small"
@@ -212,6 +232,8 @@ function Login() {
                 <div className="lastname-container">
                   <p>Last Name</p>
                   <TextField
+                    error={errors.lastName}
+                    helperText={errors.lastName && "required"}
                     onChange={handleLastName}
                     sx={{ width: "100%" }}
                     size="small"
@@ -221,8 +243,8 @@ function Login() {
               <div>
                 <p>Email Id</p>
                 <TextField
-                 error={errors.email}
-                 helperText={errors.email && "Email is required"}
+                  error={errors.email}
+                  helperText={errors.email && "Email is required"}
                   onChange={handleEmail}
                   sx={{ width: "100%" }}
                   size="small"
@@ -234,6 +256,8 @@ function Login() {
                   <OutlinedInput
                     onChange={handlePassword}
                     id="outlined-adornment-password"
+                    error={errors.password}
+                    helperText={errors.password && "Password is required"}
                     type={showPassword ? "text" : "password"}
                     endAdornment={
                       <InputAdornment position="end">
@@ -255,6 +279,8 @@ function Login() {
               <div>
                 <p>ConfirmPassword</p>
                 <TextField
+                  error={errors.confirmPassword}
+                  helperText={errors.confirmPassword && "required"}
                   onChange={handleConfirmPassword}
                   sx={{ width: "100%", color: "#FF001C" }}
                   size="small"
@@ -276,3 +302,5 @@ function Login() {
 }
 
 export default Login;
+
+
