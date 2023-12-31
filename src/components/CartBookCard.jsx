@@ -36,7 +36,7 @@ function CartBookCard({ cartData, summery=false }) {
         </div>
         <div className="cart-book-quantity">
           {summery ? (
-            <div>{cartData.quantity}</div>
+            <div>Quantity {cartData.quantity}</div>
           ) : (
             <div className="increment-decrimrnt">
               <IconButton

@@ -12,7 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { setOrders } from "../utils/store/orderSlice";
+import { setOrders, addItemToOrder } from "../utils/store/orderSlice";
 import { placeOrder } from "../utils/order";
 import useCart from "../utils/hooks/cart.hoock";
 import useAddress from "../utils/hooks/address.hook";
@@ -23,10 +23,11 @@ function Cart() {
   const [total, setTotal] = useState();
   useAddress();
   const data = useSelector((store) => store.address?.addressData);
+  const orderData = useSelector((store) => store.order?.orderItems);
 
   const addressData = data?.address?.[0];
 
-  const dispach = useDispatch();
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -56,10 +57,15 @@ function Cart() {
     setAddress(true);
   };
 
-  const handleCheckOut = (data) => {
-    dispach(setOrders({items}));
-    placeOrder(data);
+  const orderItems = { items: cartData?.items, address: addressData };
 
+  const handleCheckOut = (data) => {
+    if (orderData?.length) {
+      dispatch(addItemToOrder(orderItems));
+    } else {
+      dispatch(setOrders({ orderItems: [{ ...orderItems }] }));
+    }
+    placeOrder(data);
     navigate("/home/ordersuccessful");
   };
 
